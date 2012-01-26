@@ -48,7 +48,7 @@ module Admin::CustomFieldsHelper
 
     [].tap do |options|
       ContentType.where(:'content_custom_fields.kind'.in => ['has_one','has_many'], :'content_custom_fields.target' => klass_name).each do |content_type|
-        content_type.content_custom_fields.find_all { |f| f.has_one? && f.target == klass_name }.each do |field|
+        content_type.content_custom_fields.find_all { |f| (f.has_one? || f.has_many? ) && f.target == klass_name }.each do |field|
           options << {
             :klass  => content_type.content_klass.to_s,
             :label  => field.label,
