@@ -13,6 +13,20 @@ Given %r{^I have a custom model named "([^"]*)" with$} do |name, fields|
   content_type.save.should be_true
 end
 
+Given %r{^I add the following to a custom model named "([^"]*)"$} do |name, fields|
+  site = Site.first
+  content_type = site.content_types.where(:name => name).first
+  fields.hashes.each do |field|
+    if (target_name = field.delete('target')).present?
+      target_content_type = site.content_types.where(:name => target_name).first
+      field['target'] = target_content_type.content_klass.to_s
+    end
+    content_type.content_custom_fields.build field
+  end
+  content_type.valid?
+  content_type.save.should be_true
+end
+
 Given /^I set up a reverse has_many relationship between "([^"]*)" and "([^"]*)"$/ do |name_1, name_2|
   site = Site.first
 
