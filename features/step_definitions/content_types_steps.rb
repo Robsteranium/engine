@@ -43,6 +43,16 @@ Given /^I set up a reverse has_many relationship between "([^"]*)" and "([^"]*)"
   content_type_1.save.should be_true
 end
 
+
+Given /^I reverse the has_many relationship between "([^"]*)" and "([^"]*)"$/ do |name_1, name_2|
+  site = Site.first
+  content_type_1 = site.content_types.where(:name => name_1).first
+  content_type_2 = site.content_types.where(:name => name_2).first
+  content_type_1_field_for_2 = content_type_1.content_custom_fields.where(:label => name_2).first
+  content_type_1_field_for_2.reverse_lookup = content_type_2.content_klass.custom_field_alias_to_name(name_1.downcase)
+  content_type_1_field_for_2.save.should be_true
+end
+
 Given %r{^I have "([^"]*)" as "([^"]*)" values of the "([^"]*)" model$} do |values, field, name|
   content_type = ContentType.where(:name => name).first
   field = content_type.content_custom_fields.detect { |f| f.label == field }

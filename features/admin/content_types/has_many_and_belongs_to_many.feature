@@ -16,7 +16,9 @@ Background:
     | Projects    | has_many  | false       | Projects |
   And I add the following to a custom model named "Projects"
     | label       | kind      | required    | target   |
-    | Clients     | has_many  | false       | Clients  |
+    | Clients     | has_many  | false       | Clients  |  
+  And I reverse the has_many relationship between "Projects" and "Clients"
+  And I reverse the has_many relationship between "Clients" and "Projects"
   And I have entries for "Clients" with
     | name              | description                |
     | Alpha, Inc        | Description for Alpha, Inc |
@@ -35,15 +37,16 @@ Scenario: I add a client to a project
   And I follow "Alpha, Inc"
   And I wait until the has many selector is visible
   Then I should see "Empty" within the list of items
-  Then "Fun project" should be an option for "label"
+  When I select "Fun project" from "label"
   And I press "+ add"
   When I press "Save"
   And I wait until the has many selector is visible
+  Then I pry
   Then I should see "Fun project" within the list of added items
   And "Fun project" should not be an option for "label"
   When I go to the "Projects" model list page
   And I follow "Fun project"
   And I wait until the has many selector is visible
-  Then I should see "Fun project" within the list of added items
+  Then I should see "Alpha, Inc" within the list of added items
   Then I should not see "Empty" within the list of items
   
